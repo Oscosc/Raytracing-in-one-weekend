@@ -1,10 +1,15 @@
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
+#include "RTWeekend.h"
+#include "Hittable.h"
+#include "HittableList.h"
+#include "Sphere.h"
 
-#include <iostream>
 
-Color rayColor(const Ray& r) {
+Color rayColor(const Ray& r, const Hittable& world) {
+    HitRecord rec;
+    if (world.hit(r, Interval(0, infinity), rec)) {
+        return 0.5 * (rec.normal + Color(1, 1, 1));
+    }
+
     vec3 unitDirection = unitVector(r.direction());
     double a = 0.5 * (unitDirection.y() + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
@@ -17,6 +22,11 @@ int main()
     int imageWidth = 400;
     int imageHeight = int(imageWidth / aspectRatio);
     imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+    // World ----------------------------------------------------------------------------
+    HittableList world;
+    world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5));
+    world.add(std::make_shared<Sphere>(point3(0, -100.5, -1), 100));
 
     // Camera ---------------------------------------------------------------------------
     double focalLength = 1.0;
@@ -45,7 +55,7 @@ int main()
             auto rayDirection = pixelCenter - cameraCenter;
             Ray r(cameraCenter, rayDirection);
 
-            Color pixelColor = rayColor(r);
+            Color pixelColor = rayColor(r, world);
             writeColor(std::cout, pixelColor);
         }
     }
