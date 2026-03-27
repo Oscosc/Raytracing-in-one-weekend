@@ -106,6 +106,14 @@ inline vec3 unitVector(const vec3& v) {
     return v / v.length();
 }
 
+inline vec3 randomInUnitDisk() {
+    while (true) {
+        vec3 p = vec3(randomDouble(-1, 1), randomDouble(-1, 1), 0);
+        if(p.lengthSquared() < 1)
+            return p;
+    }
+}
+
 inline vec3 randomUnitVector() {
     while(true) {
         auto p = vec3::random(-1, 1);
@@ -115,7 +123,7 @@ inline vec3 randomUnitVector() {
     }
 }
 
-inline vec3 randomVectorOnEmisphere(const vec3& normal) {
+inline vec3 randomOnEmisphere(const vec3& normal) {
     vec3 vector = randomUnitVector();
     if(dot(vector, normal) > 0.0)
         return vector;
