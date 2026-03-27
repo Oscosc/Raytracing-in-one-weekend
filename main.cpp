@@ -1,20 +1,30 @@
 #include "RTWeekend.h"
+
+#include "Camera.h"
 #include "Hittable.h"
 #include "HittableList.h"
+#include "Material.h"
 #include "Sphere.h"
-#include "Camera.h"
 
 int main() {
     HittableList world;
 
-    world.add(std::make_shared<Sphere>(point3(0,0,-1), 0.5));
-    world.add(std::make_shared<Sphere>(point3(0,-100.5,-1), 100));
+    auto materialGround = std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
+    auto materialCenter = std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
+    auto materialLeft   = std::make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
+    auto materialRight  = std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 1.0);
+
+    world.add(std::make_shared<Sphere>(point3( 0.0, -100.5, -1.0), 100.0, materialGround));
+    world.add(std::make_shared<Sphere>(point3( 0.0,    0.0, -1.2),   0.5, materialCenter));
+    world.add(std::make_shared<Sphere>(point3(-1.0,    0.0, -1.0),   0.5, materialLeft));
+    world.add(std::make_shared<Sphere>(point3( 1.0,    0.0, -1.0),   0.5, materialRight));
 
     Camera cam;
 
     cam.aspectRatio     = 16.0 / 9.0;
     cam.imageWidth      = 400;
     cam.samplesPerPixel = 100;
+    cam.maxDepth        = 50;
 
     cam.render(world);
 }

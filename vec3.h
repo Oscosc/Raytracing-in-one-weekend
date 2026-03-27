@@ -41,6 +41,19 @@ public:
     double lengthSquared() const {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
+
+    bool nearZero() const {
+        double s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
+
+    static vec3 random() {
+        return vec3(randomDouble(), randomDouble(), randomDouble());
+    }
+
+    static vec3 random(double min, double max) {
+        return vec3(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));
+    }
 };
 
 
@@ -91,4 +104,24 @@ inline vec3 cross(const vec3& u, const vec3& v) {
 
 inline vec3 unitVector(const vec3& v) {
     return v / v.length();
+}
+
+inline vec3 randomUnitVector() {
+    while(true) {
+        auto p = vec3::random(-1, 1);
+        auto lensq = p.lengthSquared();
+        if(1e-160 < lensq && lensq <= 1)
+            return p / sqrt(lensq);
+    }
+}
+
+inline vec3 randomVectorOnEmisphere(const vec3& normal) {
+    vec3 vector = randomUnitVector();
+    if(dot(vector, normal) > 0.0)
+        return vector;
+    return -vector;
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2 * dot(v, n) * n;
 }
