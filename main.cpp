@@ -26,7 +26,8 @@ int main() {
                     // diffuse
                     Color albedo = Color::random() * Color::random();
                     sphereMaterial = std::make_shared<Lambertian>(albedo);
-                    world.add(std::make_shared<Sphere>(center, 0.2, sphereMaterial));
+                    point3 center2 = center + vec3(0, randomDouble(0, .5), 0);
+                    world.add(std::make_shared<Sphere>(center, center2, 0.2, sphereMaterial));
                 } else if (chooseMat < 0.95) {
                     // metal
                     Color albedo = Color::random(0.5, 1);
@@ -55,7 +56,7 @@ int main() {
 
     cam.aspectRatio     = 16.0 / 9.0;
     cam.imageWidth      = 400;
-    cam.samplesPerPixel = 50;
+    cam.samplesPerPixel = 100;
     cam.maxDepth        = 50;
 
     cam.vfov     = 20;

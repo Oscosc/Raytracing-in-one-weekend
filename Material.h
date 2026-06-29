@@ -27,7 +27,7 @@ public:
         if(scatterDirection.nearZero())
             scatterDirection = rec.normal;
 
-        scattered = Ray(rec.p, scatterDirection);
+        scattered = Ray(rec.p, scatterDirection, rayIn.time());
         attenuation = albedo;
         return true;
     }
@@ -48,7 +48,7 @@ public:
         vec3 reflected = reflect(rayIn.direction(), rec.normal);
         reflected = unitVector(reflected) + (fuzz * randomUnitVector());
 
-        scattered = Ray(rec.p, reflected);
+        scattered = Ray(rec.p, reflected, rayIn.time());
         attenuation = albedo;
         return true;
     }
@@ -81,7 +81,7 @@ public:
         else
             direction = refract(unitDirection, rec.normal, ri);
 
-        scattered = Ray(rec.p, direction);
+        scattered = Ray(rec.p, direction, rayIn.time());
         return true;
     }
 
